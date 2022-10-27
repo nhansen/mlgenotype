@@ -54,21 +54,19 @@ def main() -> None:
    with open(importancefile, 'w') as impwriter:
       for imp in importances:
          impwriter.write(str(imp) + '\n')
-   impwriter.close()
 
    statsfile = outputbase + ".rf.stats"
    with open(statsfile, 'w') as statswriter:
       statswriter.write("RF model best hyperparameters:\nBest number of estimators: " + str(best_params_sim['n_estimators']) + "\nBest maximum depth: " + str(best_params_sim['max_depth']) + "\n")
       statswriter.write("RF model mean CV score (all data, best hyperparameters):\n" + str(best_params_score) + "\n")
 
-   # testing simulated model with validation samples, if they were provided
-   if testsim_x is not None:
-      test_preds = rf_model.predict(testsim_x)  # predicting x variables from validation set using model
-      test_actual = testsim_y
-      print("Accuracy of fitted RF model for held out validation set:")
-      statswriter.write(mlgenotype.accuracy_score(test_actual, test_preds) + "\n")
-
-   statswriter.close()
+      # testing simulated model with validation samples, if they were provided
+      if testsim_x is not None:
+         test_preds = rf_model.predict(testsim_x)  # predicting x variables from validation set using model
+         test_actual = testsim_y
+         print("Accuracy of fitted RF model for held out validation set:")
+         test_accuracy = mlgenotype.accuracy_score(test_actual, test_preds)
+         statswriter.write(str(test_accuracy) + "\n")
 
 if __name__ == "__main__":
     main()
