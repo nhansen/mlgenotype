@@ -56,7 +56,7 @@ def main() -> None:
          impwriter.write(str(imp) + '\n')
    impwriter.close()
 
-   statsfile = outputbase + ".stats"
+   statsfile = outputbase + ".rf.stats"
    with open(statsfile, 'w') as statswriter:
       statswriter.write("RF model best hyperparameters:\nBest number of estimators: " + str(best_params_sim['n_estimators']) + "\nBest maximum depth: " + str(best_params_sim['max_depth']) + "\n")
       statswriter.write("RF model mean CV score (all data, best hyperparameters):\n" + str(best_params_score) + "\n")
@@ -66,7 +66,7 @@ def main() -> None:
       test_preds = rf_model.predict(testsim_x)  # predicting x variables from validation set using model
       test_actual = testsim_y
       print("Accuracy of fitted RF model for held out validation set:")
-      statsfile.write(mlgenotype.accuracy_score(test_actual, test_preds) + "\n")
+      statswriter.write(mlgenotype.accuracy_score(test_actual, test_preds) + "\n")
 
    statswriter.close()
 
