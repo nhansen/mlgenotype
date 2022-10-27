@@ -1,0 +1,16 @@
+h1. Python package for training and using machine learning models to genotype structural variants aligned short read data
+
+p. mlgenotype was written by Nancy Fisher Hansen, a staff scientist in the Cancer
+Genetics and Comparative Genomics Branch (CGCG) of NHGRI, an institute at the 
+National Institutes of Health.  Nancy can be reached at nhansen@mail.nih.gov.
+
+h2. Software dependencies
+
+mlgenotype requires the sklearn package
+
+h3. Clone the repository
+
+bc. git clone git://github.com/nhansen/SimSVs.git
+
+
+
