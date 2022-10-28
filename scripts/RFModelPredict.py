@@ -1,7 +1,7 @@
 import sys
 import argparse
 sys.path.insert(0, '/cluster/ifs/projects/AlphaThal/MachineLearning/mlgenotype/github')
-from mlgenotype.src import mlgenotype
+from mlgenotype.src import rfgenotype
 
 def init_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -24,7 +24,7 @@ def main() -> None:
 
    # load the optimized model specified with the --modelfile argument:
    modelfile = args.modelfile
-   rf_model = mlgenotype.load_model_from_file(modelfile)
+   rf_model = rfgenotype.load_model_from_file(modelfile)
    print("Using RF model loaded from file: " + modelfile)
 
    # reads in feature dataset that will be used for making predictions with the RF model:
@@ -35,7 +35,7 @@ def main() -> None:
    outputbase = args.outputfilebase
    print("Will write genotypes to " + outputbase + ".rf.genos, genotype probabilities to " + outputbase + ".rf.probs")
 
-   data_x, data_y, columnnames, uniquegenos = mlgenotype.read_data_file(featurefile, shuffle=False)
+   data_x, data_y, columnnames, uniquegenos = rfgenotype.read_data_file(featurefile, shuffle=False)
    data_preds = rf_model.predict(data_x.to_numpy())  # predicting y variables from feature set using model
    data_probs = rf_model.predict_proba(data_x.to_numpy())  # predicted probabilities for different genotypes
 

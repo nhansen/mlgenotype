@@ -1,7 +1,7 @@
 import sys
 import argparse
 sys.path.insert(0, '/cluster/ifs/projects/AlphaThal/MachineLearning/mlgenotype/github')
-from mlgenotype.src import mlgenotype
+from mlgenotype.src import rfgenotype
 
 def init_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -31,22 +31,22 @@ def main() -> None:
    testsim_x = None
    if valdatafile is not None:
        print("Checking fitted models accuracy with data in file: " + valdatafile)
-       testsim_x, testsim_y, testcolumnnames, testuniquegenos = mlgenotype.read_data_file(valdatafile, shuffle=False)
+       testsim_x, testsim_y, testcolumnnames, testuniquegenos = rfgenotype.read_data_file(valdatafile, shuffle=False)
 
    # report where output will go:
    outputbase = args.outputfilebase
    print("Will write model to " + outputbase + ".rf.model, model accuracy stats to " + outputbase + ".rf.stats, and feature importance values to " + outputbase + ".rf.importance.txt")
 
-   trainsim_x, trainsim_y, traincolumnnames, trainuniquegenos = mlgenotype.read_data_file(simdatafile)
+   trainsim_x, trainsim_y, traincolumnnames, trainuniquegenos = rfgenotype.read_data_file(simdatafile)
 
    # now optimize parameters using GridSearchCV (saving GSCV's best estimator model fit on all the data with the best params)
-   grid_sim = mlgenotype.rfgrid(trainsim_x, trainsim_y)
+   grid_sim = rfgenotype.rfgrid(trainsim_x, trainsim_y)
    best_params_sim = grid_sim.best_params_  # finds best parameters
    rf_model =  grid_sim.best_estimator_  # model fit with all data and best hyperparameters
    best_params_score = grid_sim.best_score_ # mean CV score of model fit with all data and best hyperparameters
 
    # save the optimized model to <outputbase>.rf.model:
-   mlgenotype.save_model_to_file(rf_model, outputbase + ".rf.model")
+   rfgenotype.save_model_to_file(rf_model, outputbase + ".rf.model")
 
    # write out feature importance values:
    importances = rf_model.feature_importances_
@@ -65,7 +65,7 @@ def main() -> None:
          test_preds = rf_model.predict(testsim_x)  # predicting x variables from validation set using model
          test_actual = testsim_y
          print("Accuracy of fitted RF model for held out validation set:")
-         test_accuracy = mlgenotype.accuracy_score(test_actual, test_preds)
+         test_accuracy = rfgenotype.accuracy_score(test_actual, test_preds)
          statswriter.write(str(test_accuracy) + "\n")
 
 if __name__ == "__main__":
