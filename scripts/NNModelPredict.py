@@ -1,0 +1,55 @@
+import sys
+import argparse
+sys.path.insert(0, '/cluster/ifs/projects/AlphaThal/MachineLearning/mlgenotype/github')
+from mlgenotype.src import nngenotype
+
+def init_argparse() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        usage="%(prog)s [OPTION] [FILE]...",
+        description="Use a trained neural network model to predict genotypes and probabilities for a feature set."
+    )
+    parser.add_argument(
+        "-v", "--version", action="version",
+        version = f"{parser.prog} version 1.0.0"
+    )
+    parser.add_argument('-m', '--modelfile', metavar='pickle file with NN model to load, as created by NNModelTrain.py', required=True)
+    parser.add_argument('-f', '--featurefile', metavar='tab-delimited file of validation features/genotypes on which to predict genotypes', required=True)
+    parser.add_argument('-o', '--outputfilebase', default='model', metavar='filename base for output files. Genotypes will be written to <filebase>.nn.genos, probabilities to <filebase>.nn.probs')
+
+    return parser
+
+def main() -> None:
+   parser = init_argparse()
+   args = parser.parse_args()
+
+   # load the optimized model specified with the --modelfile argument:
+   modelfile = args.modelfile
+   nn_model = nngenotype.load_model_from_file(modelfile)
+   print("Using NN model loaded from file: " + modelfile)
+
+   # reads in feature dataset that will be used for making predictions with the NN model:
+   featurefile = args.featurefile
+   print("Using NN model to make predictions from features in file: " + featurefile)
+
+   # report where output will go:
+   outputbase = args.outputfilebase
+   print("Will write genotypes to " + outputbase + ".nn.genos, genotype probabilities to " + outputbase + ".nn.probs")
+
+   data_x, data_y, columnnames, uniquegenos = nngenotype.read_data_file(featurefile, shuffle=False)
+   data_preds = nn_model.predict(data_x.to_numpy())  # predicting y variables from feature set using model
+   data_probs = nn_model.predict_proba(data_x.to_numpy())  # predicted probabilities for different genotypes
+
+   # creates textfiles to put all predictions/probability predictions in 
+   with open(outputbase + '.nn.genos', 'w') as writer:
+      for index, genotype in enumerate(data_preds):
+         writer.write(str(index+1) + ': ' + genotype + '\n')
+   writer.close()
+   with open(outputbase + '.nn.probs', 'w') as writer:
+      for i in range(len(data_probs)):
+         output = data_probs[i]
+         writer.write(str(output) + '\n')
+   writer.close()
+
+
+if __name__ == "__main__":
+    main()
