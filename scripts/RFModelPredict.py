@@ -42,13 +42,17 @@ def main() -> None:
    # creates textfiles to put all predictions/probability predictions in 
    with open(outputbase + '.rf.genos', 'w') as writer:
       for index, genotype in enumerate(data_preds):
-         writer.write(str(index+1) + ': ' + genotype + '\n')
+         output = data_probs[index]
+         maxprob = max(output)
+         writer.write(str(index+1) + '\t' + genotype + '\t' + str(maxprob) + '\n')
    writer.close()
-   with open(outputbase + '.rf.probs', 'w') as writer:
-      for i in range(len(data_probs)):
-         output = data_probs[i]
-         writer.write(str(output) + '\n')
-   writer.close()
+   #with open(outputbase + '.rf.probs', 'w') as writer:
+      #for i in range(len(data_probs)):
+         #output = data_probs[i]
+         #maxprob = max(output)
+         ##writer.write(str(output) + '\n')
+         #writer.write(str(maxprob) + '\n')
+   #writer.close()
 
 
 if __name__ == "__main__":
