@@ -4,8 +4,8 @@ This python package can be used to train machine learning models to genotype str
 
 ## Software dependencies
 
-- pandas
-- sklearn
+- pandas >= 1.0
+- scikit-learn >= 0.20
 
 ## Clone the repository
 
