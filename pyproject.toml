@@ -1,16 +1,20 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["setuptools >= 48"]
+build-backend = "setuptools.build_meta"
 
 [project]
 name = "mlgenotype"
-version = "0.1.0"
+version = "0.1.4"
 authors = [
   { name="Nancy F. Hansen", email="nhansen@mail.nih.gov" },
 ]
 description = "A package with utilities for training classifiers to recognize SVs in short read datasets"
 readme = "README.md"
 requires-python = ">=3.7"
+dependencies = [
+  'pandas >= 1.0',
+  'scikit-learn >= 0.20',
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
