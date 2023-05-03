@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mlgenotype_nhansen"
-version = "0.0.1"
+name = "mlgenotype"
+version = "0.1.0"
 authors = [
   { name="Nancy F. Hansen", email="nhansen@mail.nih.gov" },
 ]
