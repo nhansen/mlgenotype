@@ -1,6 +1,6 @@
 import sys
 import argparse
-from mlgenotype.rfgenotype import *
+from mlgenotype import rfgenotype
 
 def init_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(

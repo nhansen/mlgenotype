@@ -1,7 +1,6 @@
 import sys
 import argparse
-sys.path.insert(0, '/cluster/ifs/projects/AlphaThal/MachineLearning/mlgenotype/github')
-from mlgenotype.src import rfgenotype
+from mlgenotype import rfgenotype
 
 def init_argparse() -> argparse.ArgumentParser:
      parser = argparse.ArgumentParser(
