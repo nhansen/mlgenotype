@@ -1,1 +1,1 @@
-recursive-include src scripts
+recursive-include src scripts data

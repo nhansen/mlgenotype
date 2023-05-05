@@ -1,6 +1,8 @@
 import sys
 import argparse
 from mlgenotype import rfgenotype
+import warnings
+from sklearn.exceptions import DataConversionWarning
 
 def init_argparse() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -20,6 +22,8 @@ def init_argparse() -> argparse.ArgumentParser:
 def main() -> None:
    parser = init_argparse()
    args = parser.parse_args()
+
+   warnings.filterwarnings(action='ignore', category=UserWarning)
 
    # load the optimized model specified with the --modelfile argument:
    modelfile = args.modelfile
