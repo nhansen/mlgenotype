@@ -1,11 +1,11 @@
 # mlgenotype
 
-This python package can be used to train machine learning models to genotype structural variants using aligned short read data. It was written by Nancy Fisher Hansen, a staff scientist in the Cancer Genetics and Comparative Genomics Branch (CGCG) of NHGRI, starting with code written by Gracelyn Hill and Jennifer C Lin.  Nancy can be reached at nhansen@mail.nih.gov.
+This python package can be used to train machine learning models to genotype structural variants using unaligned short read data, as well as to predict genotypes for samples using whole genome short read datasets. It was written by Nancy Fisher Hansen, a staff scientist in the Computational and Statistical Genomics Branch of NHGRI, beginning with code written by Gracelyn Hill and Jennifer C Lin.  Nancy can be reached at nhansen@mail.nih.gov.
 
 ## Software dependencies
 
 - pandas >= 1.0
-- scikit-learn >= 0.20
+- scikit-learn == 1.0.2
 
 ## Clone the repository
 
