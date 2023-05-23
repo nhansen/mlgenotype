@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Installation
 nav_order: 2
 permalink: /installation/
