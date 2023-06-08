@@ -1,18 +1,22 @@
 ---
 layout: page
-title: Installation
-nav_order: 3
+title: Installing mlgenotype
+nav_order: 4
 permalink: /installation/
 ---
 
+# Installing the mlgenotype software
+
 The easiest ways to install mlgenotype are from PyPi with Python's pip installer, or by using conda to install the bioconda mlgenotype package.
 
-Pip/PyPi
+## Pip/PyPi
+
 To install mlgenotype with Python's pip installer, first create a virtual environment. Then use pip install to install the latest version of mlgenotype:
 
 python3 -m venv mlgeno_env
 python3 -m pip install mlgenotype
-Conda
+
+## Conda
 The mlgenotype package is also hosted on anaconda and available through the bioconda channel:
 
 conda create -n mlgeno -c bioconda -c conda-forge mlgenotype
