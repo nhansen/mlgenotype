@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mlgenotype"
-version = "0.1.10"
+version = "0.1.12"
 authors = [
   { name="Nancy F. Hansen", email="nhansen@mail.nih.gov" },
 ]
@@ -25,12 +25,12 @@ classifiers = [
 "Homepage" = "https://github.com/nhansen/mlgenotype"
 "Bug Tracker" = "https://github.com/nhansen/mlgenotype/issues"
 
-[project.optional-dependencies]
-dev = [
-    "pylint ~=2.14.0",
-    "toml ~=0.10.2",
-    "yapf ~=0.32.0",
-]
-test = [
-    "pytest-cov ~=3.0.0",
-]
+#[project.optional-dependencies]
+#dev = [
+    #"pylint ~=2.14.0",
+    #"toml ~=0.10.2",
+    #"yapf ~=0.32.0",
+#]
+#test = [
+    #"pytest-cov ~=3.0.0",
+#]
