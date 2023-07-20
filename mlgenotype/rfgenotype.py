@@ -63,7 +63,7 @@ def rfgrid(df_x, df_y):
     
     rf_grid = GridSearchCV(RandomForestClassifier(random_state=2), param_grid=parameters,
                           return_train_score=True, cv=5)
-    rf_grid.fit(df_x, df_y)
+    rf_grid.fit(df_x.values, df_y.values)
     
     return rf_grid
 

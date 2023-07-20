@@ -1,4 +1,5 @@
 import sys
+import os
 import argparse
 from mlgenotype import rfgenotype
 
@@ -11,8 +12,8 @@ def init_argparse() -> argparse.ArgumentParser:
          "-v", "--version", action="version",
          version = f"{parser.prog} version 1.0.0"
      )
-     parser.add_argument('-r', '--train', default='training_data.txt', metavar='file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype')
-     parser.add_argument('-t', '--test', default='training_data.txt', metavar='file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype')
+     parser.add_argument('-r', '--train', required=True, metavar='file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype')
+     parser.add_argument('-t', '--test', required=True, metavar='file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype')
      parser.add_argument('-o', '--outdir', default='rfresults', metavar='directory for output files. Subdirectory models will have saved models, and subdirectory predictions will have the predictions of those models')
      parser.add_argument('-p', '--prefix', default='rfresults', metavar='prefix for output filenames')
  
@@ -24,8 +25,7 @@ def main() -> None:
     args = parser.parse_args()
  
     # Number of training samples to use:
-    ntrainvals = [110, 220, 441, 882, 1764, 2646]
-    #ntrainvals = [5292]
+    ntrainvals = [60, 120, 180, 240, 300, 360]
  
     # reads in simulated dataset that will be used to train our RF models, shuffling:
     traindatafile = args.train
@@ -35,6 +35,14 @@ def main() -> None:
     testdatafile = args.test
     testsim_x, testsim_y, testcolumnnames, testuniquegenos = rfgenotype.read_data_file(testdatafile, shuffle=False)
  
+    # create directories if necessary:
+    if not os.path.exists(args.outdir):
+        os.makedirs(args.outdir)
+    if not os.path.exists(args.outdir + "/models"):
+        os.makedirs(args.outdir + "/models")
+    if not os.path.exists(args.outdir + "/predictions"):
+        os.makedirs(args.outdir + "/predictions")
+
     for ntrain in ntrainvals:
         # pull out ntrain samples for training our model:
         holdout = len(trainsim_x) - ntrain
@@ -54,7 +62,7 @@ def main() -> None:
         # report where output will go:
         outputbase = args.prefix
         print("Writing model to " + outputbase + "." + str(ntrain) + ".rf.model, model accuracy stats to " + outputbase + "." + str(ntrain) + ".rf.stats, and feature importance values to " + outputbase + "." + str(ntrain) + ".rf.importance.txt in models directory" )
-  
+
         # save the optimized model to <outputbase>.rf.model:
         rfgenotype.save_model_to_file(rf_model, args.outdir + "/models/" + outputbase + "." + str(ntrain) + ".rf.model")
   
