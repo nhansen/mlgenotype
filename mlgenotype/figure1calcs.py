@@ -12,8 +12,8 @@ def init_argparse() -> argparse.ArgumentParser:
          "-v", "--version", action="version",
          version = f"{parser.prog} version 1.0.0"
      )
-     parser.add_argument('-r', '--train', required=True, metavar='file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype')
-     parser.add_argument('-t', '--test', required=True, metavar='file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype')
+     parser.add_argument('-r', '--train', required=True, metavar='Training file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype')
+     parser.add_argument('-t', '--test', required=False, metavar='Test file of sample k-mer counts with one sample per line and tab-delimited feature values for each sample. File should contain a header, and the final field of each line should be the genotype. If no test file is specified, results for held out training data will be reported.')
      parser.add_argument('-o', '--outdir', default='rfresults', metavar='directory for output files. Subdirectory models will have saved models, and subdirectory predictions will have the predictions of those models')
      parser.add_argument('-p', '--prefix', default='rfresults', metavar='prefix for output filenames')
  
@@ -31,9 +31,10 @@ def main() -> None:
     traindatafile = args.train
     trainsim_x, trainsim_y, traincolumnnames, trainuniquegenos = rfgenotype.read_data_file(traindatafile, shuffle=True)
  
-    # reads in simulated dataset that will be used to test our RF models, without shuffling:
-    testdatafile = args.test
-    testsim_x, testsim_y, testcolumnnames, testuniquegenos = rfgenotype.read_data_file(testdatafile, shuffle=False)
+    # if a test file is specified, reads in simulated dataset that will be used to test our RF models, without shuffling:
+    if args.test:
+        testdatafile = args.test
+        testsim_x, testsim_y, testcolumnnames, testuniquegenos = rfgenotype.read_data_file(testdatafile, shuffle=False)
  
     # create directories if necessary:
     if not os.path.exists(args.outdir):
@@ -42,6 +43,10 @@ def main() -> None:
         os.makedirs(args.outdir + "/models")
     if not os.path.exists(args.outdir + "/predictions"):
         os.makedirs(args.outdir + "/predictions")
+
+    # open a file to write the accuracy results:
+    accuracyfile = args.outdir + "/accuracy.txt"
+    acc_fh = open(accuracyfile, 'w')
 
     for ntrain in ntrainvals:
         # pull out ntrain samples for training our model:
@@ -61,7 +66,7 @@ def main() -> None:
   
         # report where output will go:
         outputbase = args.prefix
-        print("Writing model to " + outputbase + "." + str(ntrain) + ".rf.model, model accuracy stats to " + outputbase + "." + str(ntrain) + ".rf.stats, and feature importance values to " + outputbase + "." + str(ntrain) + ".rf.importance.txt in models directory" )
+        #print("Writing model to " + outputbase + "." + str(ntrain) + ".rf.model, model accuracy stats to " + outputbase + "." + str(ntrain) + ".rf.stats, and feature importance values to " + outputbase + "." + str(ntrain) + ".rf.importance.txt in models directory" )
 
         # save the optimized model to <outputbase>.rf.model:
         rfgenotype.save_model_to_file(rf_model, args.outdir + "/models/" + outputbase + "." + str(ntrain) + ".rf.model")
@@ -79,15 +84,28 @@ def main() -> None:
             statswriter.write("RF model mean CV score (all data, best hyperparameters):\n" + str(best_params_score) + "\n")
   
         # now test this model with the appropriate test data and print results:
-        test_preds = rf_model.predict(testsim_x.to_numpy())
-        test_probs = rf_model.predict_proba(testsim_x.to_numpy())
-        actual_genos = testsim_y
+        if args.test:
+            testdata_x = testsim_x.to_numpy()
+            actual_genos = testsim_y
+        else:
+            testdata_x = test_x.values[0:100]
+            actual_genos = test_y.values[0:100]
+        test_preds = rf_model.predict(testdata_x)
+        test_probs = rf_model.predict_proba(testdata_x)
         modelpredfile = args.outdir + "/predictions/" + outputbase + "." + str(ntrain) + ".rf.genotypes.txt"
+        predcorrect = 0
+        predtotal = 0
         with open(modelpredfile, 'w') as predwriter:
             for i in range(len(test_preds)):
                 probs = test_probs[i]
                 maxprob = max(probs) 
+                if test_preds[i] == actual_genos[i]:
+                    predcorrect = predcorrect + 1
+                predtotal = predtotal + 1
                 predwriter.write(str(i + 1) + "\t" + str(test_preds[i]) + "\t" + str(actual_genos[i]) + "\t" + str(maxprob) + "\n")
+        predacc = 1.0*predcorrect/predtotal
+        acc_fh.write(str(ntrain) + "\t" + str(best_params_score) + "\t" + str(predacc) + "\n")
+    acc_fh.close()
    
 if __name__ == "__main__":
     main()
